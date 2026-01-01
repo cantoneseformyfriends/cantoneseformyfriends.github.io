@@ -405,7 +405,7 @@
             card.innerHTML = `
                 <div class="slang-header">
                     <span class="slang-word">${item.slang}</span>
-                    <button class="play-btn" onclick="playAudio('${item.slang}')">
+                    <button class="play-btn" onclick="playAudio('${item.slang}')" color:#5C5C5C>
                         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> 读词
                     </button>
                 </div>
@@ -415,7 +415,7 @@
                     <span class="ex-label">粤语例句：</span>
                     <span class="ex-text">${item.ex}</span>
                     <div class="audio-controls">
-                        <button class="play-btn" onclick="playAudio('${item.ex}')" style="width:100%; justify-content:center; margin-top:8px; color:red">
+                        <button class="play-btn" onclick="playAudio('${item.ex}')" style="width:100%; justify-content:center; margin-top:8px; color:#5C5C5C">
                             <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> 播放例句
                         </button>
                     </div>
