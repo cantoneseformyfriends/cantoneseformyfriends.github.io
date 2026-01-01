@@ -199,7 +199,7 @@
 
         .play-btn {
             background: transparent;
-            border: 1px solid currentColor;
+            border: 2px solid currentColor;
             color: var(--text-main);
             border-radius: 15px;
             padding: 4px 12px;
@@ -405,7 +405,7 @@
             card.innerHTML = `
                 <div class="slang-header">
                     <span class="slang-word">${item.slang}</span>
-                    <button class="play-btn" onclick="playAudio('${item.slang}')" color:#5C5C5C>
+                    <button class="play-btn" onclick="playAudio('${item.slang}')" style="color:#5C5C5C">
                         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> 读词
                     </button>
                 </div>
