@@ -1,422 +1,456 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta name="x-poe-datastore-behavior" content="local_only"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>粤语口语与书面语对照表</title>
+    <title>粤语口语 vs 书面语对照表</title>
     <style>
         :root {
-            /* Light Mode - Calming, Muted, Organized */
-            --bg-color: #F4F1EA; /* 暖米色，像旧纸张 */
+            /* 莫兰迪色系 (Morandi Colors) - 柔和、冷静、低刺激 */
+            --bg-color: #F5F5F0; /* 米灰白 */
             --card-bg: #FFFFFF;
             --text-main: #5C5C5C; /* 深灰，非纯黑 */
-            --text-sub: #8A8A8A;
-            --accent-green: #A3B18A; /* 鼠尾草绿 */
-            --accent-pink: #D5BDAF; /* 干燥玫瑰 */
-            --accent-blue: #8ECAE6; /* 雾霾蓝 */
-            --accent-yellow: #E9C46A; /* 姜黄 */
-            --border-radius: 16px;
-            --shadow: 0 4px 12px rgba(0,0,0,0.04);
-            --font-main: "PingFang SC", "Microsoft YaHei", sans-serif;
+            --text-sub: #919191;
+            --border-color: #E6E6E6;
+            
+            /* 分类强调色 - 柔和版 */
+            --tag-people: #94A8B3; /* 雾霾蓝 - 人地时 */
+            --tag-verb: #9CB0A3;   /* 鼠尾草绿 - 动词 */
+            --tag-conn: #C7B2B2;   /* 干燥玫瑰 - 连接词 */
+            --tag-tone: #D4C5A0;   /* 姜黄 - 语气 */
+
+            --btn-hover: rgba(0,0,0,0.05);
+            --shadow: 0 4px 12px rgba(0,0,0,0.03);
+            --radius: 16px;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                /* Dark Mode - Low Contrast, Soothing */
-                --bg-color: #2C2F33;
-                --card-bg: #3A3E44;
-                --text-main: #DCDDDE;
-                --text-sub: #99AAB5;
-                --accent-green: #7F9C96;
-                --accent-pink: #C77D63;
-                --accent-blue: #6D9DC5;
-                --accent-yellow: #D4A373;
+                --bg-color: #2C2C2C;
+                --card-bg: #383838;
+                --text-main: #E0E0E0;
+                --text-sub: #A0A0A0;
+                --border-color: #4A4A4A;
+                
+                --tag-people: #708591;
+                --tag-verb: #7A8F82;
+                --tag-conn: #A69090;
+                --tag-tone: #B0A282;
+
+                --btn-hover: rgba(255,255,255,0.1);
                 --shadow: 0 4px 12px rgba(0,0,0,0.2);
             }
         }
 
         * {
             box-sizing: border-box;
-            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: var(--font-main);
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
             padding: 20px;
-            line-height: 1.6;
+            line-height: 1.5;
+            transition: background-color 0.3s;
         }
 
         header {
+            max-width: 1000px;
+            margin: 0 auto 30px auto;
             text-align: center;
-            margin-bottom: 30px;
-            padding-top: 20px;
         }
 
         h1 {
             font-weight: 500;
-            color: var(--text-main);
             letter-spacing: 1px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            color: var(--text-main);
         }
 
-        p.subtitle {
-            color: var(--text-sub);
+        .subtitle {
             font-size: 0.9rem;
+            color: var(--text-sub);
         }
 
-        /* Tabs Navigation */
-        .tabs {
+        /* 筛选区 */
+        .filter-container {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 30px;
+            gap: 10px;
+            margin-bottom: 25px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .tab-btn {
+        .filter-btn {
             background: var(--card-bg);
-            border: 1px solid transparent;
+            border: 1px solid var(--border-color);
             color: var(--text-sub);
-            padding: 8px 20px;
-            border-radius: 25px;
+            padding: 8px 16px;
+            border-radius: 20px;
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            transition: all 0.2s;
             box-shadow: var(--shadow);
         }
 
-        .tab-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .tab-btn.active {
-            background: var(--accent-green);
-            color: white;
+        .filter-btn.active {
+            color: #fff;
+            border-color: transparent;
             font-weight: bold;
         }
 
-        /* Grid Layout */
+        /* 不同分类激活时的颜色 */
+        .filter-btn[data-filter="all"].active { background-color: var(--text-main); }
+        .filter-btn[data-filter="people"].active { background-color: var(--tag-people); }
+        .filter-btn[data-filter="verb"].active { background-color: var(--tag-verb); }
+        .filter-btn[data-filter="conn"].active { background-color: var(--tag-conn); }
+        .filter-btn[data-filter="tone"].active { background-color: var(--tag-tone); }
+
+        /* 网格布局 */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 20px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        /* Card Style */
+        /* 卡片样式 */
         .card {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
             padding: 20px;
             box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            border-left: 6px solid var(--accent-green); /* Default color */
             position: relative;
+            overflow: hidden;
         }
 
-        .card-header {
+        /* 左侧彩色条 */
+        .card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+        }
+        .card[data-cat="people"]::before { background-color: var(--tag-people); }
+        .card[data-cat="verb"]::before { background-color: var(--tag-verb); }
+        .card[data-cat="conn"]::before { background-color: var(--tag-conn); }
+        .card[data-cat="tone"]::before { background-color: var(--tag-tone); }
+
+        /* 内容布局 */
+        .row {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed var(--text-sub);
-            opacity: 0.8;
+            align-items: baseline;
+            margin-bottom: 6px;
         }
 
-        .main-word {
-            display: flex;
-            flex-direction: column;
+        .label {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+            margin-bottom: 2px;
         }
 
         .cantonese-word {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: bold;
             color: var(--text-main);
         }
 
+        .standard-word {
+            font-size: 1rem;
+            color: var(--text-sub);
+        }
+
         .jyutping {
-            font-size: 0.8rem;
-            color: var(--accent-blue);
             font-family: monospace;
-            margin-top: 2px;
-        }
-
-        .written-word {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-sub);
-            background: rgba(0,0,0,0.05);
-            padding: 2px 8px;
-            border-radius: 4px;
-            align-self: flex-start;
+            opacity: 0.8;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--border-color);
         }
 
+        /* 例句区域 */
         .example-section {
-            margin-top: auto;
             background-color: rgba(0,0,0,0.02);
-            padding: 12px;
             border-radius: 8px;
-        }
-
-        .ex-label {
-            font-size: 0.75rem;
-            color: var(--text-sub);
-            display: block;
-            margin-bottom: 4px;
+            padding: 12px;
+            margin-top: auto;
         }
 
         .ex-text {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             font-size: 0.95rem;
         }
-
-        .ex-canto {
-            color: var(--text-main);
-            font-weight: 500;
+        .ex-sub {
+            font-size: 0.8rem;
+            color: var(--text-sub);
         }
 
-        /* Play Button */
+        /* 播放按钮 */
+        .play-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
         .play-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            color: var(--accent-green);
-            padding: 8px;
-            border-radius: 50%;
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 6px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 6px;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: background 0.2s;
         }
 
         .play-btn:hover {
-            background-color: rgba(0,0,0,0.05);
-            transform: scale(1.1);
+            background-color: var(--btn-hover);
         }
 
         .play-btn svg {
-            width: 24px;
-            height: 24px;
+            width: 14px;
+            height: 14px;
             fill: currentColor;
         }
 
-        /* Toast Notification */
+        /* 提示框 */
         #toast {
             visibility: hidden;
             min-width: 200px;
-            background-color: var(--accent-green);
-            color: #fff;
+            background-color: var(--text-main);
+            color: var(--bg-color);
             text-align: center;
             border-radius: 50px;
-            padding: 12px 24px;
+            padding: 10px 20px;
             position: fixed;
             z-index: 100;
             left: 50%;
             bottom: 30px;
             transform: translateX(-50%);
             font-size: 0.9rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             opacity: 0;
             transition: opacity 0.3s, bottom 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
         #toast.show {
             visibility: visible;
             opacity: 1;
-            bottom: 40px;
+            bottom: 50px;
         }
-
     </style>
 </head>
 <body>
 
 <header>
-    <h1>粤语口语对照表</h1>
-    <p class="subtitle">点击喇叭播放粤语例句 | 适合华为浏览器</p>
+    <h1>粤语口语 vs 书面语</h1>
+    <div class="subtitle">点击按钮播放粤语发音 | 适配华为浏览器</div>
 </header>
 
-<div class="tabs">
-    <!-- Added data-cat attributes to fix the selection logic -->
-    <button class="tab-btn active" data-cat="all" onclick="filterData('all')">全部</button>
-    <button class="tab-btn" data-cat="person_time" onclick="filterData('person_time')">人称/时间/地点</button>
-    <button class="tab-btn" data-cat="verb" onclick="filterData('verb')">动词/状态</button>
-    <button class="tab-btn" data-cat="connect" onclick="filterData('connect')">连接词</button>
-    <button class="tab-btn" data-cat="tone" onclick="filterData('tone')">语气助词</button>
+<div class="filter-container">
+    <button class="filter-btn active" data-filter="all" onclick="filterData('all', this)">全部显示</button>
+    <button class="filter-btn" data-filter="people" onclick="filterData('people', this)">人称/时间/地点</button>
+    <button class="filter-btn" data-filter="verb" onclick="filterData('verb', this)">动词/状态</button>
+    <button class="filter-btn" data-filter="conn" onclick="filterData('conn', this)">连接词</button>
+    <button class="filter-btn" data-filter="tone" onclick="filterData('tone', this)">语气助词</button>
 </div>
 
-<main class="grid" id="cardGrid">
-    <!-- Cards will be injected via JS -->
-</main>
+<div class="grid" id="contentGrid">
+    <!-- 卡片将通过 JS 生成 -->
+</div>
 
 <div id="toast">正在播放...</div>
 
 <script>
-    // 数据源：来自 compare_fun3.docx
-    const vocabulary = [
-        // 人地時 (Person/Place/Time)
-        { w: "他/她/它", c: "佢", jp: "keoi5", ex_w: "我不认识他", ex_c: "我唔识佢", cat: "person_time" },
-        { w: "我们", c: "我哋", jp: "ngo5 dei6", ex_w: "我们去吃饭", ex_c: "我哋去食饭", cat: "person_time" },
-        { w: "你们", c: "你哋", jp: "nei5 dei6", ex_w: "你们几点到？", ex_c: "你哋几点到？", cat: "person_time" },
-        { w: "他们", c: "佢哋", jp: "keoi5 dei6", ex_w: "他们是谁？", ex_c: "佢哋系边个？", cat: "person_time" },
-        { w: "谁", c: "边个", jp: "bin1 go3", ex_w: "谁找我？", ex_c: "边个搵我？", cat: "person_time" },
-        { w: "哪里", c: "边度", jp: "bin1 dou6", ex_w: "你去哪里？", ex_c: "你去边度？", cat: "person_time" },
-        { w: "这里", c: "呢度", jp: "ni1 dou6", ex_w: "这里有人坐", ex_c: "呢度有人坐", cat: "person_time" },
-        { w: "那里", c: "嗰度", jp: "go2 dou6", ex_w: "那里有家超市", ex_c: "嗰度有间超市", cat: "person_time" },
-        { w: "现在", c: "而家", jp: "ji4 gaa1", ex_w: "现在几点？", ex_c: "而家几点？", cat: "person_time" },
-        { w: "过去", c: "旧时", jp: "gau6 si4", ex_w: "过去这里是农田", ex_c: "旧时呢度係農田", cat: "person_time" },
-        { w: "一会儿", c: "一阵间", jp: "jat1 zan6 gaan1", ex_w: "一会儿再找你", ex_c: "一阵间再搵你", cat: "person_time" },
-        { w: "今天", c: "今日", jp: "gam1 jat6", ex_w: "今天天气很好", ex_c: "今日天气好好", cat: "person_time" },
-        { w: "明天", c: "听日", jp: "ting1 jat6", ex_w: "明天见", ex_c: "听日见", cat: "person_time" },
-        { w: "昨天", c: "寻日", jp: "cam4 jat6", ex_w: "昨天我去了看电影", ex_c: "寻日我去咗睇戏", cat: "person_time" },
-        { w: "年底", c: "年尾", jp: "nin4 mei5", ex_w: "到年底才交稅", ex_c: "到年尾至交稅", cat: "person_time" },
+    // 数据源：基于 compare_fun3.docx 内容
+    const db = [
+        // 1. 人地时 (People/Place/Time)
+        { cat: 'people', std: '他/她/它', cant: '佢', jp: 'keoi5', stdEx: '我不认识他', cantEx: '我唔识佢' },
+        { cat: 'people', std: '我们', cant: '我哋', jp: 'ngo5 dei6', stdEx: '我们去吃饭', cantEx: '我哋去食饭' },
+        { cat: 'people', std: '你们', cant: '你哋', jp: 'nei5 dei6', stdEx: '你们几点到？', cantEx: '你哋几点到？' },
+        { cat: 'people', std: '他们', cant: '佢哋', jp: 'keoi5 dei6', stdEx: '他们是谁？', cantEx: '佢哋系边个？' },
+        { cat: 'people', std: '谁', cant: '边个', jp: 'bin1 go3', stdEx: '谁找我？', cantEx: '边个搵我？' },
+        { cat: 'people', std: '哪里', cant: '边度', jp: 'bin1 dou6', stdEx: '你去哪里？', cantEx: '你去边度？' },
+        { cat: 'people', std: '这里', cant: '呢度', jp: 'ni1 dou6', stdEx: '这里有人坐', cantEx: '呢度有人坐' },
+        { cat: 'people', std: '那里', cant: '嗰度', jp: 'go2 dou6', stdEx: '那里有家超市', cantEx: '嗰度有间超市' },
+        { cat: 'people', std: '现在', cant: '而家', jp: 'ji4 gaa1', stdEx: '现在几点？', cantEx: '而家几点？' },
+        { cat: 'people', std: '过去', cant: '旧时', jp: 'gau6 si4', stdEx: '过去这里是农田', cantEx: '旧时呢度係農田' },
+        { cat: 'people', std: '一会儿', cant: '一阵间', jp: 'jat1 zan6 gaan1', stdEx: '一会儿再找你', cantEx: '一阵间再搵你' },
+        { cat: 'people', std: '今天', cant: '今日', jp: 'gam1 jat6', stdEx: '今天天气很好', cantEx: '今日天气好好' },
+        { cat: 'people', std: '明天', cant: '听日', jp: 'ting1 jat6', stdEx: '明天见', cantEx: '听日见' },
+        { cat: 'people', std: '昨天', cant: '寻日', jp: 'cam4 jat6', stdEx: '昨天我去了看电影', cantEx: '寻日我去咗睇戏' },
+        { cat: 'people', std: '年底', cant: '年尾', jp: 'nin4 mei5', stdEx: '到年底才交稅', cantEx: '到年尾至交稅' },
 
-        // 动词状态 (Verbs/States)
-        { w: "是", c: "系", jp: "hai6", ex_w: "他是我的朋友", ex_c: "佢系我朋友", cat: "verb" },
-        { w: "在", c: "喺", jp: "hai2", ex_w: "我在家里", ex_c: "我喺屋企", cat: "verb" },
-        { w: "看", c: "睇", jp: "tai2", ex_w: "看电视", ex_c: "睇电视", cat: "verb" },
-        { w: "吃", c: "食", jp: "sik6", ex_w: "吃饭了吗？", ex_c: "食饭未？", cat: "verb" },
-        { w: "喝", c: "饮", jp: "jam2", ex_w: "喝水", ex_c: "饮水", cat: "verb" },
-        { w: "睡觉", c: "瞓觉", jp: "fan3 gaau3", ex_w: "我要去睡觉了", ex_c: "我要去瞓觉喇", cat: "verb" },
-        { w: "站", c: "企", jp: "kei5", ex_w: "不要站在这里", ex_c: "唔好企喺度", cat: "verb" },
-        { w: "给", c: "俾", jp: "bei2", ex_w: "给我一支笔", ex_c: "俾支笔我", cat: "verb" },
-        { w: "找", c: "搵", jp: "wan2", ex_w: "我正在找钥匙", ex_c: "我搵紧锁匙", cat: "verb" },
-        { w: "拿", c: "攞", jp: "lo2", ex_w: "帮我拿杯水", ex_c: "帮我攞杯水", cat: "verb" },
-        { w: "穿 (衣)", c: "着", jp: "zoek3", ex_w: "穿衣服", ex_c: "着衫", cat: "verb" },
-        { w: "脱 (衣)", c: "除", jp: "ceoi4", ex_w: "脱鞋", ex_c: "除鞋", cat: "verb" },
-        { w: "下车", c: "落车", jp: "lok6 ce1", ex_w: "前面下车", ex_c: "前面落车", cat: "verb" },
-        { w: "累", c: "攰", jp: "gui6", ex_w: "我很累", ex_c: "我好攰", cat: "verb" },
-        { w: "生气", c: "嬲", jp: "nau1", ex_w: "别生气啦", ex_c: "唔好嬲啦", cat: "verb" },
-        { w: "害怕", c: "惊", jp: "geng1", ex_w: "我很怕老鼠", ex_c: "我好惊老鼠", cat: "verb" },
-        { w: "厉害", c: "犀利", jp: "sai1 lei6", ex_w: "你很厉害啊！", ex_c: "你好犀利啊！", cat: "verb" },
-        { w: "便宜", c: "平", jp: "peng4", ex_w: "东西很便宜", ex_c: "啲嘢好平", cat: "verb" },
-        { w: "冷", c: "冻", jp: "dung3", ex_w: "今天很冷", ex_c: "今日好冻", cat: "verb" },
-        { w: "一起", c: "一齐", jp: "jat1 cai4", ex_w: "一起食饭", ex_c: "一齐食饭", cat: "verb" },
+        // 2. 动词状态 (Verbs/States)
+        { cat: 'verb', std: '是', cant: '系', jp: 'hai6', stdEx: '他是我的朋友', cantEx: '佢系我朋友' },
+        { cat: 'verb', std: '在', cant: '喺', jp: 'hai2', stdEx: '我在家里', cantEx: '我喺屋企' },
+        { cat: 'verb', std: '看', cant: '睇', jp: 'tai2', stdEx: '看电视', cantEx: '睇电视' },
+        { cat: 'verb', std: '吃', cant: '食', jp: 'sik6', stdEx: '吃饭了吗？', cantEx: '食饭未？' },
+        { cat: 'verb', std: '喝', cant: '饮', jp: 'jam2', stdEx: '喝水', cantEx: '饮水' },
+        { cat: 'verb', std: '睡觉', cant: '瞓觉', jp: 'fan3 gaau3', stdEx: '我要去睡觉了', cantEx: '我要去瞓觉喇' },
+        { cat: 'verb', std: '站', cant: '企', jp: 'kei5', stdEx: '不要站在这里', cantEx: '唔好企喺度' },
+        { cat: 'verb', std: '给', cant: '俾', jp: 'bei2', stdEx: '给我一支笔', cantEx: '俾支笔我' },
+        { cat: 'verb', std: '找', cant: '搵', jp: 'wan2', stdEx: '我正在找钥匙', cantEx: '我搵紧锁匙' },
+        { cat: 'verb', std: '拿', cant: '攞', jp: 'lo2', stdEx: '帮我拿杯水', cantEx: '帮我攞杯水' },
+        { cat: 'verb', std: '穿 (衣)', cant: '着', jp: 'zoek3', stdEx: '穿衣服', cantEx: '着衫' },
+        { cat: 'verb', std: '脱 (衣)', cant: '除', jp: 'ceoi4', stdEx: '脱鞋', cantEx: '除鞋' },
+        { cat: 'verb', std: '下车', cant: '落车', jp: 'lok6 ce1', stdEx: '前面下车', cantEx: '前面落车' },
+        { cat: 'verb', std: '累', cant: '攰', jp: 'gui6', stdEx: '我很累', cantEx: '我好攰' },
+        { cat: 'verb', std: '生气', cant: '嬲', jp: 'nau1', stdEx: '别生气啦', cantEx: '唔好嬲啦' },
+        { cat: 'verb', std: '害怕', cant: '惊', jp: 'geng1', stdEx: '我很怕老鼠', cantEx: '我好惊老鼠' },
+        { cat: 'verb', std: '厉害', cant: '犀利', jp: 'sai1 lei6', stdEx: '你很厉害啊！', cantEx: '你好犀利啊！' },
+        { cat: 'verb', std: '便宜', cant: '平', jp: 'peng4', stdEx: '东西很便宜', cantEx: '啲嘢好平' },
+        { cat: 'verb', std: '冷', cant: '冻', jp: 'dung3', stdEx: '今天很冷', cantEx: '今日好冻' },
+        { cat: 'verb', std: '一起', cant: '一齐', jp: 'jat1 cai4', stdEx: '一起食饭', cantEx: '一齐食饭' },
 
-        // 连接词 (Conjunctions)
-        { w: "的", c: "嘅", jp: "ge3", ex_w: "我的书", ex_c: "我嘅书", cat: "connect" },
-        { w: "不", c: "唔", jp: "m4", ex_w: "不好/不要", ex_c: "唔好", cat: "connect" },
-        { w: "没有", c: "冇", jp: "mou5", ex_w: "我没有钱", ex_c: "我冇钱", cat: "connect" },
-        { w: "了", c: "咗", jp: "zo2", ex_w: "吃了饭", ex_c: "食咗饭", cat: "connect" },
-        { w: "着(持续)", c: "住", jp: "zyu6", ex_w: "拿着", ex_c: "拎住", cat: "connect" },
-        { w: "正在", c: "紧", jp: "gan2", ex_w: "正在吃饭", ex_c: "食紧饭", cat: "connect" },
-        { w: "为什么", c: "点解", jp: "dim2 gaai2", ex_w: "为什么你会知道？", ex_c: "点解你会知？", cat: "connect" },
-        { w: "什么", c: "咩", jp: "me1", ex_w: "你吃什么？", ex_c: "你食咩？", cat: "connect" },
-        { w: "怎么", c: "点", jp: "dim2", ex_w: "怎么做啊？", ex_c: "点做啊？", cat: "connect" },
+        // 3. 连接词 (Conjunctions)
+        { cat: 'conn', std: '的', cant: '嘅', jp: 'ge3', stdEx: '我的书', cantEx: '我嘅书' },
+        { cat: 'conn', std: '不', cant: '唔', jp: 'm4', stdEx: '不好/不要', cantEx: '唔好' },
+        { cat: 'conn', std: '没有', cant: '冇', jp: 'mou5', stdEx: '我没有钱', cantEx: '我冇钱' },
+        { cat: 'conn', std: '了', cant: '咗', jp: 'zo2', stdEx: '吃了饭', cantEx: '食咗饭' },
+        { cat: 'conn', std: '着 (持续)', cant: '住', jp: 'zyu6', stdEx: '拿着', cantEx: '拎住' },
+        { cat: 'conn', std: '正在', cant: '紧', jp: 'gan2', stdEx: '正在吃饭', cantEx: '食紧饭' },
+        { cat: 'conn', std: '为什么', cant: '点解', jp: 'dim2 gaai2', stdEx: '为什么你会知道？', cantEx: '点解你会知？' },
+        { cat: 'conn', std: '什么', cant: '咩', jp: 'me1', stdEx: '你吃什么？', cantEx: '你食咩？' },
+        { cat: 'conn', std: '怎么', cant: '点', jp: 'dim2', stdEx: '怎么做啊？', cantEx: '点做啊？' },
 
-        // 語氣 (Tone Particles)
-        { w: "吗？真的吗？", c: "咩", jp: "me1", ex_w: "你认识他吗？", ex_c: "你识佢咩？", cat: "tone" },
-        { w: "啊？", c: "呀", jp: "aa3", ex_w: "是谁来啊？", ex_c: "边个嚟呀？", cat: "tone" },
-        { w: "怎么...的？", c: "嘅", jp: "ge2", ex_w: "为什么会这样？", ex_c: "点解会咁嘅？", cat: "tone" },
-        { w: "的、是...的", c: "㗎", jp: "gaa3", ex_w: "他是老师来的。", ex_c: "佢系老师嚟㗎。", cat: "tone" },
-        { w: "嘛、呗", c: "啰", jp: "lo1", ex_w: "下雨就带伞啊。", ex_c: "落雨咪带遮啰。", cat: "tone" },
-        { w: "了(完成)", c: "喇", jp: "laa1", ex_w: "我吃饱了。", ex_c: "我食饱喇。", cat: "tone" },
-        { w: "罢了", c: "罢", jp: "baa6", ex_w: "算了吧。", ex_c: "算数罢啦。", cat: "tone" },
-        { w: "吧(催促)", c: "啦", jp: "laa1", ex_w: "你快一点吧！", ex_c: "你快啲啦！", cat: "tone" },
-        { w: "吧(建议)", c: "丫", jp: "aa1", ex_w: "不如去看电影吧？", ex_c: "不如去睇戏丫？", cat: "tone" },
-        { w: "喔！竟然...", c: "喎", jp: "wo3", ex_w: "原来是你喔！", ex_c: "原来系你喎！", cat: "tone" },
-        { w: "而已", c: "啫", jp: "ze1", ex_w: "十块钱而已，很便宜。", ex_c: "十蚊啫，好平。", cat: "tone" },
-        { w: "而已(强)", c: "之嘛", jp: "zi1 maa3", ex_w: "开玩笑而已。", ex_c: "讲笑之嘛。", cat: "tone" },
-        { w: "每当", c: "亲", jp: "can1", ex_w: "他每次吃海鲜都过敏。", ex_c: "佢食亲海鲜都敏感。", cat: "tone" }
+        // 4. 语气 (Tone Particles)
+        { cat: 'tone', std: '吗？(反问)', cant: '咩', jp: 'me1', stdEx: '你认识他吗？', cantEx: '你识佢咩？' },
+        { cat: 'tone', std: '啊？(提问)', cant: '呀', jp: 'aa3', stdEx: '是谁来啊？', cantEx: '边个嚟呀？' },
+        { cat: 'tone', std: '怎么...的', cant: '嘅', jp: 'ge2', stdEx: '为什么会这样？', cantEx: '点解会咁嘅？' },
+        { cat: 'tone', std: '的/是...的', cant: '㗎', jp: 'gaa3', stdEx: '他是老师来的。', cantEx: '佢系老师嚟㗎。' },
+        { cat: 'tone', std: '嘛/呗', cant: '啰', jp: 'lo1', stdEx: '下雨就带伞啊。', cantEx: '落雨咪带遮啰。' },
+        { cat: 'tone', std: '了 (完成)', cant: '喇', jp: 'laa1', stdEx: '我吃饱了。', cantEx: '我食饱喇。' },
+        { cat: 'tone', std: '罢了', cant: '罢', jp: 'baa6', stdEx: '算了吧。', cantEx: '算数罢啦。' },
+        { cat: 'tone', std: '吧 (催促)', cant: '啦', jp: 'laa1', stdEx: '你快一点吧！', cantEx: '你快啲啦！' },
+        { cat: 'tone', std: '吧 (建议)', cant: '丫', jp: 'aa1', stdEx: '不如去看电影吧？', cantEx: '不如去睇戏丫？' },
+        { cat: 'tone', std: '喔！竟然', cant: '喎', jp: 'wo3', stdEx: '原来是你喔！', cantEx: '原来系你喎！' },
+        { cat: 'tone', std: '而已', cant: '啫', jp: 'ze1', stdEx: '十块钱而已。', cantEx: '十蚊啫，好平。' },
+        { cat: 'tone', std: '而已 (强调)', cant: '之嘛', jp: 'zi1 maa3', stdEx: '开玩笑而已。', cantEx: '讲笑之嘛。' },
+        { cat: 'tone', std: '每当', cant: '亲', jp: 'can1', stdEx: '他每次吃海鲜都过敏。', cantEx: '佢食亲海鲜都敏感。' }
     ];
 
-    const grid = document.getElementById('cardGrid');
-    const tabs = document.querySelectorAll('.tab-btn');
+    const grid = document.getElementById('contentGrid');
 
-    function filterData(category) {
-        // FIXED: Use dataset instead of event.target to handle initial load safely
-        tabs.forEach(btn => {
-            if (btn.dataset.cat === category) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
-
+    // 渲染函数
+    function render(data) {
         grid.innerHTML = '';
-        
-        const filtered = category === 'all' 
-            ? vocabulary 
-            : vocabulary.filter(item => item.cat === category);
-
-        filtered.forEach(item => {
+        data.forEach(item => {
             const card = document.createElement('div');
             card.className = 'card';
-            
-            // 根据分类设置颜色
-            let colorVar = 'var(--accent-green)';
-            if (item.cat === 'verb') colorVar = 'var(--accent-blue)';
-            if (item.cat === 'connect') colorVar = 'var(--accent-yellow)';
-            if (item.cat === 'tone') colorVar = 'var(--accent-pink)';
-            
-            card.style.borderLeftColor = colorVar;
+            card.setAttribute('data-cat', item.cat);
 
             card.innerHTML = `
-                <div class="card-header">
-                    <div class="main-word">
-                        <span class="written-word">书: ${item.w}</span>
-                        <span class="cantonese-word">${item.c}</span>
-                        <span class="jyutping">${item.jp}</span>
-                    </div>
-                    <button class="play-btn" onclick="playAudio('${item.ex_c}')" style="color:${colorVar}" aria-label="播放粤语">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-                        </svg>
-                    </button>
+                <div class="row">
+                    <span class="label">书面语</span>
+                    <span class="standard-word">${item.std}</span>
                 </div>
+                <div class="row" style="margin-bottom: 2px;">
+                    <span class="label">粤语口语</span>
+                    <span class="cantonese-word">${item.cant}</span>
+                </div>
+                <div class="jyutping">${item.jp}</div>
+                
                 <div class="example-section">
-                    <span class="ex-label">书面语：${item.ex_w}</span>
-                    <span class="ex-label" style="color:${colorVar}; font-weight:bold; margin-top:5px;">粤语口语：</span>
-                    <span class="ex-text ex-canto">${item.ex_c}</span>
+                    <div class="ex-text"><strong>粤：</strong>${item.cantEx}</div>
+                    <div class="ex-sub">普：${item.stdEx}</div>
+                </div>
+
+                <div class="play-row">
+                    <button class="play-btn" onclick="playCantonese('${item.cant}')">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> 读词
+                    </button>
+                    <button class="play-btn" onclick="playCantonese('${item.cantEx}')">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> 读例句
+                    </button>
                 </div>
             `;
             grid.appendChild(card);
         });
     }
 
-    // 语音播放逻辑
-    function playAudio(text) {
-        // 停止之前的播放
+    // 筛选功能
+    function filterData(category, btn) {
+        // 更新按钮状态
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // 筛选数据
+        if (category === 'all') {
+            render(db);
+        } else {
+            const filtered = db.filter(item => item.cat === category);
+            render(filtered);
+        }
+    }
+
+    // 语音播放功能 (核心)
+    function playCantonese(text) {
+        // 1. 停止当前正在播放的语音
         window.speechSynthesis.cancel();
 
+        // 2. 创建语音实例
         const utterance = new SpeechSynthesisUtterance(text);
         
-        // 关键：设置语言为粤语 (香港)
-        // 华为/Android 浏览器通常识别 zh-HK
+        // 3. 关键设置：华为/安卓浏览器需要明确指定 zh-HK
         utterance.lang = 'zh-HK'; 
-        utterance.rate = 0.9; // 语速稍慢，清晰易懂
+        utterance.rate = 0.9; // 稍微放慢语速，更清晰
 
-        // 尝试获取系统声音列表以确保兼容性
+        // 4. 尝试寻找最佳粤语语音包 (兼容性处理)
         const voices = window.speechSynthesis.getVoices();
-        // 优先寻找包含 HK 或 yue 的声音
-        const cantoVoice = voices.find(v => v.lang.includes('HK') || v.lang.includes('yue'));
-        if(cantoVoice) {
+        const cantoVoice = voices.find(v => 
+            v.lang === 'zh-HK' || 
+            v.lang.includes('yue') || 
+            v.name.includes('Cantonese') ||
+            v.name.includes('Hong Kong')
+        );
+        
+        if (cantoVoice) {
             utterance.voice = cantoVoice;
         }
 
-        utterance.onstart = () => showToast(`正在播放: "${text}"`);
-        utterance.onerror = (e) => console.error("Speech error", e);
+        // 5. 反馈
+        utterance.onstart = () => showToast(`正在播放: ${text}`);
+        utterance.onerror = (e) => console.log("播放错误:", e);
 
+        // 6. 播放
         window.speechSynthesis.speak(utterance);
     }
 
+    // 吐司提示
     function showToast(msg) {
         const toast = document.getElementById('toast');
         toast.textContent = msg;
         toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2500);
+        setTimeout(() => toast.classList.remove('show'), 2000);
     }
 
-    // 初始化
-    // 某些浏览器需要 voiceschanged 事件才能正确加载声音列表
+    // 初始化：加载声音列表 (解决某些浏览器首次加载声音列表为空的问题)
     window.speechSynthesis.onvoiceschanged = function() {
-        // 预加载声音
         window.speechSynthesis.getVoices();
     };
 
-    // 默认加载全部
-    filterData('all');
+    // 初始渲染
+    render(db);
 
 </script>
 
