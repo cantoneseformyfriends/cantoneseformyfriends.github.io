@@ -10,6 +10,7 @@
             --text-main: rgb(40, 40, 40);
             --text-sub: #545454;
             --border-color: #E6E6E6;
+            --accent-green: #9CB0A3; /* Button Background */
             --tag-all: #94A8B3; /* All */
             --tag-people: #94A8B3; /* 雾霾蓝 - 人地时 */
             --tag-verb: #9CB0A3;   /* 鼠尾草绿 - 动词 */
@@ -26,6 +27,7 @@
                 --text-main: #E0E0E0;
                 --text-sub: #D1D1D1;
                 --border-color: #5C5C5C;
+                --accent-green: #7A8F82; /* Button Background */
                 --tag-all: #708591;
                 --tag-people: #708591;
                 --tag-verb: #7A8F82;
@@ -98,17 +100,11 @@
         }
 
         .filter-btn.active {
-            color: #fff;
-            border-color: transparent;
+            background-color: var(--accent-green);
+            color: white;
+            border-color: var(--accent-green);
             font-weight: bold;
         }
-
-        /* 不同分类激活时的颜色 */
-        .filter-btn[data-filter="all"].active { background-color: var(--tag-all); }
-        .filter-btn[data-filter="people"].active { background-color: var(--tag-people); }
-        .filter-btn[data-filter="verb"].active { background-color: var(--tag-verb); }
-        .filter-btn[data-filter="conn"].active { background-color: var(--tag-conn); }
-        .filter-btn[data-filter="tone"].active { background-color: var(--tag-tone); }
 
         /* 网格布局 */
         .grid {
