@@ -598,11 +598,9 @@
                 alert(`音频文件 ${number} 的URL未配置。`);
                 return;
             }
-            
+
             // Create new audio element with the web URL
             currentAudio = new Audio(url);
-            
-            document.getElementById("btn_1").disabled = true;
             
             // Play the audio
             currentAudio.play().catch(error => {
@@ -610,7 +608,6 @@
                 alert(`无法播放音频文件。请检查URL是否正确：${url}`);
             });
 
-            document.getElementById("btn_1").disabled = false;
         }
     </script>
 
