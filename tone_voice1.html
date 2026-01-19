@@ -802,6 +802,14 @@
   </div>
   
     <script>
+
+// Variable to store the currently playing audio object
+let currentAudio = null;
+// Variable to store the button associated with the currently playing audio
+let currentBtn = null;
+// Variable to store the original text of the button
+let currentOldText = null;
+
         // Audio file URLs mapping
         // Replace these URLs with your actual audio file URLs
         const audioUrls = {
@@ -840,13 +848,6 @@
             33: 'https://cantogo.github.io/voice/voice_33.mp3',
             34: 'https://cantogo.github.io/voice/voice_34.mp3'
           };
-
-// Variable to store the currently playing audio object
-let currentAudio = null;
-// Variable to store the button associated with the currently playing audio
-let currentBtn = null;
-// Variable to store the original text of the button
-let currentOldText = null;
 
         function playAudio(btn, number) {
             // Stop any currently playing audio
@@ -894,9 +895,10 @@ let currentOldText = null;
             btn.innerHTML = oldText;
             currentAudio = null;
             currentBtn = null;
-            });            
+        };            
 
-        }
+      });
+    }
     </script>
 
     <script>
