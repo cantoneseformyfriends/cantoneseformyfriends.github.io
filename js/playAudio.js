@@ -21,7 +21,7 @@
             const url = "voice/" + catName + "_" + number + ".mp3";
 
             if (!url) {
-                alert(`音频文件 ${number} 的URL未配置。`);
+                alert(`音频文件的未配置。`);
                 return;
             }
 
@@ -40,7 +40,7 @@
             // Play the audio
             currentAudio.play().catch(error => {
                 console.error('Error playing audio:', error);
-                alert(`无法播放音频文件。请检查URL是否正确：${url}`);
+                alert(`无法播放音频文件。请不要太快重复点击播放按钮。`);
             });
 
             // enable the button after playing the audio
