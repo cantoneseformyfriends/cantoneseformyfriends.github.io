@@ -1,4 +1,3 @@
-    <script>
 
         // Create objects for reuse
         let currentAudio = null;
@@ -50,4 +49,3 @@
                 btn.innerHTML = oldText;
             });         
         }
-    </script>
