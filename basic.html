@@ -320,16 +320,6 @@
     </div>
 </header>
 
-<!--
-    <header>
-        <div class="container">
-            <h1>🧪 粵語聲音實驗室</h1>
-            <p class="subtitle">收錄 40 個最道地、最有趣的粵語詞彙。<br>點擊卡片，讓聲音帶你體驗香港文化！</p>
-            <p class="quote">「語言是打開文化的鑰匙。」</p>
-        </div>
-    </header>
--->
-
     <main class="container">
         <div id="card-grid" class="grid">
             <!-- Cards will be injected here by JavaScript -->
@@ -370,17 +360,6 @@
         
         // Render Cards
         data.forEach(item => {
-            /*
-            // Add Category Header if needed
-            if (item.category !== currentCategory) {
-                const title = document.createElement('div');
-                title.className = 'category-title';
-                title.textContent = item.category;
-                grid.appendChild(title);
-                currentCategory = item.category;
-            }
-            */
-
             const card = document.createElement('div');
             card.className = 'card';
             card.setAttribute('role', 'button');
@@ -418,7 +397,7 @@
             }
             
             // Get the URL for the audio file
-            const url = "voice/twister_" + number + ".mp3";
+            const url = "voice/basic_" + number + ".mp3";
 
             if (!url) {
                 alert(`音频文件的未配置。`);
