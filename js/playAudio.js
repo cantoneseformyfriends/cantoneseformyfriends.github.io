@@ -17,7 +17,8 @@
             }
             
             // Get the URL for the audio file
-            const url = "voice/" + catName + "_" + number + ".mp3";
+            const url = "https://cantogo.github.io/voice/" + catName + "_" + number + ".mp3";
+            //const url = "voice/" + catName + "_" + number + ".mp3";
 
             if (!url) {
                 alert(`音频文件的未配置。`);
