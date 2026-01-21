@@ -1,8 +1,9 @@
 <!DOCTYPE html><html lang="zh-HK"><head><meta name="x-poe-datastore-behavior" content="local_only"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>粵語聲音實驗室 (40詞彙版)</title>
+    <title>粵語聲音實驗室 (40詞彙深色模式版)</title>
     <style>
+        /* 定義變數：預設為淺色模式 (Light Mode) */
         :root {
             --primary-color: #6366f1;
             --bg-color: #f3f4f6;
@@ -10,6 +11,38 @@
             --text-main: #1f2937;
             --text-sub: #6b7280;
             --accent-color: #818cf8;
+            --header-bg-start: #e0e7ff;
+            --header-bg-end: #f3f4f6;
+            --jyutping-bg: #e0e7ff;
+            --jyutping-text: #4338ca;
+            --card-border-playing: #6366f1;
+            --card-bg-playing: #eef2ff;
+            --footer-border: #e5e7eb;
+            --toast-bg: #333333;
+            --toast-text: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* 深色模式 (Dark Mode) 覆寫 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #818cf8;       /* 較亮的紫色，在深色背景更清晰 */
+                --bg-color: #111827;            /* 深灰/黑色背景 */
+                --card-bg: #1f2937;             /* 卡片深灰色 */
+                --text-main: #f9fafb;           /* 接近白色 */
+                --text-sub: #9ca3af;            /* 淺灰色 */
+                --accent-color: #6366f1;
+                --header-bg-start: #312e81;     /* 深靛藍色 */
+                --header-bg-end: #111827;       /* 接合背景色 */
+                --jyutping-bg: #374151;         /* 深灰底色 */
+                --jyutping-text: #a5b4fc;       /* 淺紫文字 */
+                --card-border-playing: #818cf8;
+                --card-bg-playing: #374151;     /* 播放時的背景變亮一點 */
+                --footer-border: #374151;
+                --toast-bg: #f3f4f6;            /* 反轉配色 */
+                --toast-text: #1f2937;
+                --shadow-color: rgba(0, 0, 0, 0.5);
+            }
         }
 
         body {
@@ -19,6 +52,7 @@
             margin: 0;
             padding: 0;
             line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .container {
@@ -30,10 +64,11 @@
         header {
             text-align: center;
             padding: 40px 20px;
-            background: linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 100%);
+            background: linear-gradient(135deg, var(--header-bg-start) 0%, var(--header-bg-end) 100%);
             border-radius: 0 0 30px 30px;
             margin-bottom: 40px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px -1px var(--shadow-color);
+            transition: background 0.3s;
         }
 
         h1 {
@@ -82,7 +117,7 @@
 
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 15px -3px var(--shadow-color);
             border-color: var(--accent-color);
         }
 
@@ -91,8 +126,8 @@
         }
 
         .card.playing {
-            border-color: var(--primary-color);
-            background-color: #eef2ff;
+            border-color: var(--card-border-playing);
+            background-color: var(--card-bg-playing);
         }
 
         .emoji {
@@ -110,11 +145,11 @@
 
         .jyutping {
             font-family: "Courier New", monospace;
-            color: var(--primary-color);
+            color: var(--jyutping-text);
             font-weight: 600;
             font-size: 0.9rem;
             margin: 5px 0 15px;
-            background: #e0e7ff;
+            background: var(--jyutping-bg);
             padding: 2px 8px;
             border-radius: 10px;
         }
@@ -123,7 +158,8 @@
             font-weight: 600;
             font-size: 1.1rem;
             margin-bottom: 10px;
-            color: #374151;
+            color: var(--text-main);
+            opacity: 0.9;
         }
 
         .desc {
@@ -169,7 +205,7 @@
             padding: 40px;
             color: var(--text-sub);
             margin-top: 40px;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid var(--footer-border);
         }
 
         .category-title {
@@ -190,8 +226,8 @@
         #toast {
             visibility: hidden;
             min-width: 250px;
-            background-color: #333;
-            color: #fff;
+            background-color: var(--toast-bg);
+            color: var(--toast-text);
             text-align: center;
             border-radius: 50px;
             padding: 16px;
@@ -280,20 +316,20 @@
             { category: "💬 心情與形容", emoji: "😡", word: "嬲", jyutping: "nau1", meaning: "生氣", desc: "字形是兩男夾一女，形容生氣的樣子。" },
             { category: "💬 心情與形容", emoji: "👍", word: "好正", jyutping: "hou2 zeng3", meaning: "超棒 / 極好", desc: "形容食物、體驗或美女帥哥都可以用。" },
 
-            // 6. 職場求生 (5) - NEW
+            // 6. 職場求生 (5)
             { category: "💼 職場求生", emoji: "🐍", word: "蛇王", jyutping: "se4 wong4", meaning: "偷懶", desc: "工作時偷偷溜出去休息，你是「蛇王」嗎？" },
             { category: "💼 職場求生", emoji: "😫", word: "辛苦晒", jyutping: "san1 fu2 saai3", meaning: "辛苦了", desc: "同事幫忙後，或下班時對大家說的客氣話。" },
             { category: "💼 職場求生", emoji: "🌙", word: "OT", jyutping: "ou1 ti1", meaning: "加班", desc: "Overtime 的縮寫。香港職場的常見文化。" },
             { category: "💼 職場求生", emoji: "👋", word: "散水", jyutping: "saan3 seoi2", meaning: "解散 / 離職", desc: "原本指解散，現在多指辭職離開公司。" },
             { category: "💼 職場求生", emoji: "🤝", word: "開會", jyutping: "hoi1 wui2", meaning: "開會", desc: "上班族最常做的事之一，有時一開就是半天。" },
 
-            // 7. 鬼馬俚語 (4) - NEW
+            // 7. 鬼馬俚語 (4)
             { category: "👻 鬼馬俚語", emoji: "🗣️", word: "吹水", jyutping: "ceoi1 seoi2", meaning: "聊天 / 吹牛", desc: "朋友聚在一起天南地北地聊，就是吹水。" },
             { category: "👻 鬼馬俚語", emoji: "🤿", word: "潛水", jyutping: "cim4 seoi2", meaning: "消失 / 潛水", desc: "在群組裡不說話，或者突然失蹤找不到人。" },
             { category: "👻 鬼馬俚語", emoji: "🔥", word: "熱氣", jyutping: "jit6 hei3", meaning: "上火", desc: "吃了炸物喉嚨痛？那就是「熱氣」了。" },
             { category: "👻 鬼馬俚語", emoji: "🍊", word: "運吉", jyutping: "wan6 gat1", meaning: "白忙一場", desc: "以前送桔代表吉利，後來引申為沒幫襯還來搗亂。" },
 
-            // 8. 生活必備 (5) - NEW
+            // 8. 生活必備 (5)
             { category: "🎒 生活必備", emoji: "💳", word: "八達通", jyutping: "baat3 daat6 tung1", meaning: "交通卡", desc: "香港生活的神卡，搭車吃飯購物全靠它。" },
             { category: "🎒 生活必備", emoji: "📱", word: "手機", jyutping: "sau2 gei1", meaning: "手機", desc: "現代人不可或缺的身體延伸部分。" },
             { category: "🎒 生活必備", emoji: "☔", word: "雨遮", jyutping: "jyu5 ze1", meaning: "雨傘", desc: "「遮」有遮擋的意思，下雨天必備。" },
