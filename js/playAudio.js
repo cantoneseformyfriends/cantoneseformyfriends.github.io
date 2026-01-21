@@ -17,7 +17,6 @@
             }
             
             // Get the URL for the audio file
-            // const url = "https://cantogo.github.io/voice/twister_" + number + ".mp3";
             const url = "voice/" + catName + "_" + number + ".mp3";
 
             if (!url) {
