@@ -23,23 +23,23 @@
             --shadow-color: rgba(0, 0, 0, 0.1);
         }
 
-        /* 深色模式 (Dark Mode) 覆寫 */
+        /* 深色模式 (Dark Mode) */
         @media (prefers-color-scheme: dark) {
             :root {
-                --primary-color: #818cf8;       /* 較亮的紫色，在深色背景更清晰 */
-                --bg-color: #111827;            /* 深灰/黑色背景 */
-                --card-bg: #1f2937;             /* 卡片深灰色 */
-                --text-main: #f9fafb;           /* 接近白色 */
-                --text-sub: #9ca3af;            /* 淺灰色 */
+                --primary-color: #818cf8;     
+                --bg-color: #111827;
+                --card-bg: #1f2937;
+                --text-main: #f9fafb;
+                --text-sub: #9ca3af;
                 --accent-color: #6366f1;
-                --header-bg-start: #312e81;     /* 深靛藍色 */
-                --header-bg-end: #111827;       /* 接合背景色 */
-                --jyutping-bg: #374151;         /* 深灰底色 */
-                --jyutping-text: #a5b4fc;       /* 淺紫文字 */
+                --header-bg-start: #312e81;
+                --header-bg-end: #111827;
+                --jyutping-bg: #374151;
+                --jyutping-text: #a5b4fc;
                 --card-border-playing: #818cf8;
-                --card-bg-playing: #374151;     /* 播放時的背景變亮一點 */
+                --card-bg-playing: #374151;
                 --footer-border: #374151;
-                --toast-bg: #f3f4f6;            /* 反轉配色 */
+                --toast-bg: #f3f4f6;
                 --toast-text: #1f2937;
                 --shadow-color: rgba(0, 0, 0, 0.5);
             }
@@ -358,10 +358,11 @@
             const card = document.createElement('div');
             card.className = 'card';
             card.setAttribute('role', 'button');
-            card.setAttribute('aria-label', `播放 ${item.word}`);
+            card.setAttribute('aria-label', `${item.word}`);
             
             card.innerHTML = `
                 <div class="sound-wave">
+                    <span>粤语播放中...&nbsp;&nbsp;&nbsp;</span>
                     <div class="bar"></div>
                     <div class="bar"></div>
                     <div class="bar"></div>
@@ -374,7 +375,7 @@
             `;
 
             card.addEventListener('click', () => {
-                playAudio(item.cantno);
+                playAudio(item.cantno, card);
             });
 
             grid.appendChild(card);
@@ -384,7 +385,7 @@
         // Create objects for reuse
         let currentAudio = null;
 
-        function playAudio(number) {
+        function playAudio(number, cardElement) {
             // Stop any currently playing audio
             if (currentAudio) {
                 currentAudio.pause();
@@ -392,22 +393,30 @@
             }
             
             // Get the URL for the audio file
-            const url = "voice/basic_" + number + ".mp3";
+            const url = "https://cantogo.github.io/voice/basic_" + number + ".mp3";
 
             if (!url) {
                 alert(`音频文件的未配置。`);
                 return;
             }
 
+            // Show the play bar
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('playing'));
+            cardElement.classList.add('playing');
+
             // Create new audio element with the web URL
             currentAudio = new Audio(url);
-
+          
             // Play the audio
             currentAudio.play().catch(error => {
                 console.error('Error playing audio:', error);
                 alert(`无法播放音频文件。请不要太快重复点击播放按钮。`);
             });
-
+            
+            // Hidden the play bar after playing the audio
+            currentAudio.addEventListener('ended', function() {
+                cardElement.classList.remove('playing');
+            });       
         }
 
 </script>
